@@ -1,20 +1,24 @@
 package com.example.hello.dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.example.hello.entity.Product;
+import lombok.*;
 
 @Builder
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProductResponseDto {
     private Long number;
     private String name;
     private int price;
     private int stock;
-    public ProductResponseDto() {
+    public ProductResponseDto(Product product) {
+        this.number = product.getNumber();
+        this.name = product.getName();
+        this.price = product.getPrice();
+        this.stock = product.getStock();
     }
+
 }

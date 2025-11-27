@@ -1,4 +1,8 @@
 package com.example.hello.repository;
 
-public interface ProviderRepository {
+import com.example.hello.entity.Provider;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProviderRepository extends JpaRepository<Provider,Long> {
+
 }

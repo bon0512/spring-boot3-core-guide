@@ -2,7 +2,10 @@ package com.example.hello.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,8 +14,8 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-public class Product {
+@EqualsAndHashCode(callSuper = true)
+public class Product extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +30,14 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @OneToOne(mappedBy = "product")
+    @ToString.Exclude
+    private ProductDetail productDetail;
+
+    @ManyToOne
+    @JoinColumn(name = "provider_id")
+    @ToString.Exclude
+    private Provider provider;
+
+
 }

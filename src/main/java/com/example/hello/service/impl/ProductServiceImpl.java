@@ -4,6 +4,7 @@ import com.example.hello.dao.ProductDAO;
 import com.example.hello.dto.ProductDto;
 import com.example.hello.dto.ProductResponseDto;
 import com.example.hello.entity.Product;
+import com.example.hello.repository.ProductRepository;
 import com.example.hello.service.ProductService;
 import org.hibernate.sql.results.spi.LoadContexts;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,59 @@ import java.time.LocalDateTime;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductDAO productDAO;
+    private final ProductRepository productRepository;
+
+    @Autowired
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    // 제품 조회
+    @Override
+    public ProductResponseDto getProduct(Long number){
+        Product product = productRepository.findById(number)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        return new ProductResponseDto(product);
+    }
+
+    // 새 제품 저장
+    @Override
+    public ProductResponseDto saveProduct(ProductDto productDto) {
+        Product product = new Product();
+        product.setName(productDto.getName());
+        product.setPrice(productDto.getPrice());
+        product.setStock(productDto.getStock());
+        product.setCreatedAt(LocalDateTime.now());
+        product.setUpdatedAt(LocalDateTime.now());
+
+        Product savedProduct = productRepository.save(product);
+
+        return new ProductResponseDto(savedProduct);
+    }
+
+    // 제품 이름 변경
+    @Override
+    public ProductResponseDto changeProductName(Long number, String name) throws Exception {
+        Product product = productRepository.findById(number)
+                .orElseThrow(() -> new Exception("Product not found"));
+
+        product.setName(name);
+        product.setUpdatedAt(LocalDateTime.now());
+
+        Product updated = productRepository.save(product);
+
+        return new ProductResponseDto(updated);
+    }
+
+    // 제품 삭제
+    @Override
+    public void deleteProduct(Long number) throws Exception {
+        Product product = productRepository.findById(number)
+                .orElseThrow(() -> new Exception("Product not found"));
+        productRepository.delete(product);
+    }
+    /*private final ProductDAO productDAO;
 
 
     @Autowired
@@ -78,5 +131,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long number) throws Exception {
         productDAO.deleteProduct(number);
-    }
+    }*/
+
 }
